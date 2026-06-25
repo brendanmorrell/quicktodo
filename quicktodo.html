@@ -1,0 +1,1974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Todo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --radius: 14px;
+    --radius-sm: 10px;
+    --radius-xs: 7px;
+    --bg-base: #1a1a2e;
+    --bg-surface: #16213e;
+    --bg-elevated: #1c2a4a;
+    --bg-row-alt: rgba(255,255,255,0.025);
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555577;
+    --border-subtle: rgba(255,255,255,0.06);
+    /* Neutral defaults (no list selected) */
+    --neon: #888;
+    --neon-dim: #555;
+    --neon-glow: rgba(136,136,136,0.3);
+    --neon-wash: rgba(136,136,136,0.06);
+    --neon-wash-strong: rgba(136,136,136,0.12);
+    --neon-tint-bg: #1a1a2e;
+    --neon-tint-surface: #16213e;
+    --neon-tint-row: rgba(136,136,136,0.03);
+    --neon-tint-input: rgba(136,136,136,0.06);
+    --neon-tint-border: rgba(136,136,136,0.10);
+  }
+
+  /* ── Neon palette — 8 vivid neon hues ── */
+  .color-0 { /* Electric Cyan */
+    --neon: #00e5ff; --neon-dim: #00a0b2;
+    --neon-glow: rgba(0,229,255,0.35);
+    --neon-wash: rgba(0,229,255,0.06);
+    --neon-wash-strong: rgba(0,229,255,0.14);
+    --neon-tint-bg: #111c24;
+    --neon-tint-surface: #0e1f2e;
+    --neon-tint-row: rgba(0,229,255,0.03);
+    --neon-tint-input: rgba(0,229,255,0.07);
+    --neon-tint-border: rgba(0,229,255,0.15);
+  }
+  .color-1 { /* Neon Violet */
+    --neon: #b24dff; --neon-dim: #7e35b5;
+    --neon-glow: rgba(178,77,255,0.35);
+    --neon-wash: rgba(178,77,255,0.06);
+    --neon-wash-strong: rgba(178,77,255,0.14);
+    --neon-tint-bg: #1a1428;
+    --neon-tint-surface: #1e1636;
+    --neon-tint-row: rgba(178,77,255,0.03);
+    --neon-tint-input: rgba(178,77,255,0.07);
+    --neon-tint-border: rgba(178,77,255,0.15);
+  }
+  .color-2 { /* Neon Green */
+    --neon: #39ff85; --neon-dim: #28b25d;
+    --neon-glow: rgba(57,255,133,0.35);
+    --neon-wash: rgba(57,255,133,0.06);
+    --neon-wash-strong: rgba(57,255,133,0.14);
+    --neon-tint-bg: #111e18;
+    --neon-tint-surface: #0e2418;
+    --neon-tint-row: rgba(57,255,133,0.03);
+    --neon-tint-input: rgba(57,255,133,0.07);
+    --neon-tint-border: rgba(57,255,133,0.15);
+  }
+  .color-3 { /* Neon Orange */
+    --neon: #ff9f1c; --neon-dim: #c07515;
+    --neon-glow: rgba(255,159,28,0.35);
+    --neon-wash: rgba(255,159,28,0.06);
+    --neon-wash-strong: rgba(255,159,28,0.14);
+    --neon-tint-bg: #1e1811;
+    --neon-tint-surface: #241c0e;
+    --neon-tint-row: rgba(255,159,28,0.03);
+    --neon-tint-input: rgba(255,159,28,0.07);
+    --neon-tint-border: rgba(255,159,28,0.15);
+  }
+  .color-4 { /* Neon Pink */
+    --neon: #ff2d78; --neon-dim: #c01f5a;
+    --neon-glow: rgba(255,45,120,0.35);
+    --neon-wash: rgba(255,45,120,0.06);
+    --neon-wash-strong: rgba(255,45,120,0.14);
+    --neon-tint-bg: #1e1118;
+    --neon-tint-surface: #240e1a;
+    --neon-tint-row: rgba(255,45,120,0.03);
+    --neon-tint-input: rgba(255,45,120,0.07);
+    --neon-tint-border: rgba(255,45,120,0.15);
+  }
+  .color-5 { /* Neon Yellow */
+    --neon: #e8ff30; --neon-dim: #a8b820;
+    --neon-glow: rgba(232,255,48,0.30);
+    --neon-wash: rgba(232,255,48,0.05);
+    --neon-wash-strong: rgba(232,255,48,0.12);
+    --neon-tint-bg: #1a1c11;
+    --neon-tint-surface: #20220e;
+    --neon-tint-row: rgba(232,255,48,0.025);
+    --neon-tint-input: rgba(232,255,48,0.06);
+    --neon-tint-border: rgba(232,255,48,0.13);
+  }
+  .color-6 { /* Neon Teal */
+    --neon: #14f0c8; --neon-dim: #0eb899;
+    --neon-glow: rgba(20,240,200,0.35);
+    --neon-wash: rgba(20,240,200,0.06);
+    --neon-wash-strong: rgba(20,240,200,0.14);
+    --neon-tint-bg: #111e1c;
+    --neon-tint-surface: #0e2420;
+    --neon-tint-row: rgba(20,240,200,0.03);
+    --neon-tint-input: rgba(20,240,200,0.07);
+    --neon-tint-border: rgba(20,240,200,0.15);
+  }
+  .color-7 { /* Neon Magenta */
+    --neon: #ff47ff; --neon-dim: #b830b8;
+    --neon-glow: rgba(255,71,255,0.35);
+    --neon-wash: rgba(255,71,255,0.06);
+    --neon-wash-strong: rgba(255,71,255,0.14);
+    --neon-tint-bg: #1e1120;
+    --neon-tint-surface: #24102a;
+    --neon-tint-row: rgba(255,71,255,0.03);
+    --neon-tint-input: rgba(255,71,255,0.07);
+    --neon-tint-border: rgba(255,71,255,0.15);
+  }
+
+  html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    background: transparent;
+    color: var(--text-primary);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── App shell ── */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--neon-tint-bg);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* ── Titlebar — neon header ── */
+  .titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 34px;
+    padding: 0 14px;
+    background: var(--neon-tint-surface);
+    flex-shrink: 0;
+    cursor: grab;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid var(--neon-dim);
+    box-shadow: 0 1px 12px var(--neon-glow), inset 0 -1px 0 var(--neon-wash-strong);
+  }
+  .titlebar:active { cursor: grabbing; }
+  .titlebar-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--neon);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 10px var(--neon-glow), 0 0 20px var(--neon-glow);
+  }
+
+  /* ── Collapsible ── */
+  .collapsible {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .app.collapsed .collapsible { display: none; }
+
+  /* ── User bar ── */
+  .user-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--neon-tint-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+  }
+  .user-bar-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+  .user-bar-switch {
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .user-bar-switch:hover {
+    border-color: var(--neon);
+    color: var(--neon);
+  }
+
+  /* ── Tab bar ── */
+  .tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: var(--neon-tint-surface);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    letter-spacing: 0.2px;
+  }
+  .tab:hover {
+    background: var(--neon-wash-strong);
+    border-color: var(--neon-dim);
+    color: var(--neon);
+    text-shadow: 0 0 8px var(--neon-glow);
+    box-shadow: 0 0 8px var(--neon-wash-strong);
+  }
+  .tab.active {
+    background: var(--neon-wash-strong);
+    color: #fff;
+    border-color: var(--neon);
+    box-shadow: 0 0 12px var(--neon-glow), 0 0 4px var(--neon-wash-strong);
+    text-shadow: 0 0 10px var(--neon-glow), 0 0 20px var(--neon-glow);
+  }
+  .tab.shared { border-style: dashed; }
+  .tab.shared.active { border-style: solid; }
+  .tab.active .tab-close { color: rgba(255,255,255,0.7); }
+  .tab.active .tab-close:hover { color: #fff; }
+  .tab .tab-close {
+    display: none;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 1px;
+    border-radius: 50%;
+    opacity: 0.6;
+    transition: opacity 0.1s;
+  }
+  .tab:hover .tab-close { display: inline-flex; color: var(--neon); }
+  .tab .tab-close:hover { opacity: 1; }
+
+  .tab-shared-badge {
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.5;
+    font-weight: 600;
+  }
+
+  .tab-count {
+    font-size: 10px;
+    opacity: 0.6;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 5px;
+    border-radius: 8px;
+  }
+
+  .tab-name { cursor: pointer; }
+
+  .tab-add-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .tab-add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    border: 1.5px solid transparent;
+  }
+  .tab-add:hover {
+    background: var(--neon-wash-strong);
+    color: var(--neon);
+    border-color: var(--neon-dim);
+    box-shadow: 0 0 8px var(--neon-wash);
+    text-shadow: 0 0 6px var(--neon-glow);
+  }
+
+  .shared-toggle {
+    background: none;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+    font-size: 9px;
+    padding: 3px 7px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    font-family: inherit;
+  }
+  .shared-toggle:hover {
+    border-color: var(--neon);
+    color: var(--neon);
+  }
+  .shared-toggle.active {
+    border-color: var(--neon);
+    color: var(--neon);
+    background: var(--neon-wash);
+  }
+
+  /* ── List area ── */
+  .list-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 8px;
+  }
+  .list-area::-webkit-scrollbar { width: 5px; }
+  .list-area::-webkit-scrollbar-track { background: transparent; }
+  .list-area::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.08);
+    border-radius: 10px;
+  }
+  .list-area::-webkit-scrollbar-thumb:hover { background: var(--neon-dim); }
+
+  /* ── Todo items ── */
+  .todo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    margin-bottom: 2px;
+    cursor: default;
+    border-radius: var(--radius-xs);
+    transition: all 0.15s ease;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+  .todo-item:nth-child(even) {
+    background: var(--neon-tint-row);
+  }
+  .todo-item:hover {
+    background: var(--neon-wash);
+    border-color: rgba(255,255,255,0.04);
+  }
+
+  .todo-check {
+    width: 19px;
+    height: 19px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: transparent;
+  }
+  .todo-check:hover {
+    border-color: var(--neon);
+    box-shadow: 0 0 8px var(--neon-glow);
+    transform: scale(1.1);
+  }
+  .todo-item.done .todo-check {
+    border-color: transparent;
+    background: var(--neon);
+    box-shadow: 0 0 8px var(--neon-glow);
+    transform: scale(1);
+  }
+  .todo-item.done .todo-check::after {
+    content: "\2713";
+    font-size: 11px;
+    color: #fff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  /* ── In-flight state — amber ── */
+  .todo-item.inflight .todo-check {
+    border-color: transparent;
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245,158,11,0.4);
+    transform: scale(1);
+  }
+  .todo-item.inflight .todo-check::after {
+    content: "▸";
+    font-size: 13px;
+    color: #fff;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  }
+
+  .todo-text {
+    flex: 1;
+    line-height: 1.45;
+    padding: 0;
+    word-break: break-word;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+  }
+  .todo-item.done .todo-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+  .todo-item.inflight .todo-text {
+    color: #f59e0b;
+  }
+
+  .todo-delete {
+    opacity: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 2px 5px;
+    flex-shrink: 0;
+    line-height: 1;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+  }
+  .todo-item:hover .todo-delete { opacity: 1; }
+  .todo-delete:hover {
+    color: var(--neon);
+    text-shadow: 0 0 6px var(--neon-glow);
+  }
+
+  /* ── Input area ── */
+  .input-area {
+    padding: 8px 10px;
+    flex-shrink: 0;
+    background: var(--neon-tint-surface);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .input-area input {
+    width: 100%;
+    padding: 9px 14px;
+    background: var(--neon-tint-input);
+    border: 1.5px solid var(--neon-tint-border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    transition: all 0.25s ease;
+  }
+  .input-area input:focus {
+    border-color: var(--neon);
+    box-shadow: 0 0 12px var(--neon-glow), 0 0 4px var(--neon-wash-strong);
+    background: var(--neon-wash);
+  }
+  .input-area input::placeholder { color: var(--text-muted); }
+
+  /* ── Inline item edit ── */
+  .todo-edit-input {
+    flex: 1;
+    background: var(--neon-wash);
+    border: 1.5px solid var(--neon-dim);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.45;
+    padding: 2px 8px;
+    outline: none;
+    border-radius: 6px;
+    box-shadow: 0 0 8px var(--neon-glow);
+    width: 100%;
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-muted);
+    font-size: 13px;
+    gap: 6px;
+    padding: 20px;
+    text-align: center;
+  }
+  .empty-state .hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  /* ── Status bar ── */
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 14px 7px;
+    font-size: 11px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    background: var(--neon-tint-surface);
+    border-top: 1px solid var(--border-subtle);
+  }
+  .clear-done {
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+  .clear-done:hover {
+    color: var(--neon);
+    background: var(--neon-wash);
+    border-color: var(--neon-dim);
+    text-shadow: 0 0 6px var(--neon-glow);
+    box-shadow: 0 0 8px var(--neon-wash);
+  }
+
+  /* ── Tab rename input ── */
+  .tab-rename-input {
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--neon);
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    outline: none;
+    border-radius: 12px;
+    width: 90px;
+    box-shadow: 0 0 10px var(--neon-glow);
+  }
+
+  /* ── Check completion animation ── */
+  @keyframes check-pop {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    70%  { transform: scale(0.88); }
+    100% { transform: scale(1); }
+  }
+  .todo-item.completing .todo-check {
+    animation: check-pop 0.35s ease forwards;
+  }
+
+  /* ── Drag styles ── */
+  .todo-item.dragging { opacity: 0.35; }
+  .todo-item.drag-over { box-shadow: 0 -2px 0 var(--neon); }
+
+  /* ── Subtask styles ── */
+  .subtask-row {
+    padding-left: 8px;
+    font-size: 12px;
+  }
+  .subtask-indent {
+    display: inline-block;
+    width: 16px;
+    height: 24px;
+    border-left: 2px solid var(--border-subtle);
+    border-bottom: 2px solid var(--border-subtle);
+    border-bottom-left-radius: 4px;
+    flex-shrink: 0;
+    align-self: center;
+    margin-bottom: -4px;
+  }
+  .subtask-row .todo-check {
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+  }
+  .subtask-row .todo-check::after {
+    font-size: 9px;
+  }
+  .subtask-new-dot {
+    color: var(--text-secondary);
+    font-size: 16px;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .todo-text--sub { font-size: 12px; }
+  .subtask-edit-input { font-size: 12px; padding: 1px 6px; }
+  .subtask-badge {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .add-sub-btn {
+    opacity: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 1px 5px;
+    flex-shrink: 0;
+    line-height: 1;
+    border-radius: 50%;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+  .todo-item:hover .add-sub-btn { opacity: 0.7; }
+  .add-sub-btn:hover {
+    opacity: 1 !important;
+    color: var(--neon);
+    border-color: var(--neon-dim);
+  }
+
+  /* ── Tab drag-target pulse ── */
+  .tab.drag-target {
+    animation: tab-drag-pulse 0.5s ease infinite alternate;
+  }
+  @keyframes tab-drag-pulse {
+    from { box-shadow: 0 0 6px var(--neon-glow); }
+    to   { box-shadow: 0 0 20px var(--neon-glow), 0 0 40px var(--neon-glow); }
+  }
+
+  /* ── Context menu ── */
+  .ctx-menu {
+    position: fixed;
+    background: var(--neon-tint-surface);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 4px 0;
+    min-width: 160px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    z-index: 9999;
+    font-size: 12px;
+  }
+  .ctx-menu-item {
+    padding: 6px 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+  }
+  .ctx-menu-item:hover {
+    background: var(--neon-wash-strong);
+    color: var(--neon);
+    text-shadow: 0 0 6px var(--neon-glow);
+  }
+  .ctx-menu-item .ctx-check {
+    width: 14px;
+    font-size: 12px;
+    color: var(--neon);
+  }
+
+  /* ── Identity picker ── */
+  .identity-picker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    background: var(--bg-base);
+  }
+  .identity-picker-content {
+    text-align: center;
+    padding: 24px;
+  }
+  .identity-picker-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--text-primary);
+  }
+  .identity-picker-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+  }
+  .identity-picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 200px;
+    padding: 14px 20px;
+    background: var(--bg-surface);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .identity-picker-btn:hover {
+    border-color: #00e5ff;
+    background: var(--bg-elevated);
+    box-shadow: 0 0 20px rgba(0,229,255,0.15);
+    transform: translateY(-2px);
+  }
+  .identity-picker-btn:active { transform: translateY(0); }
+  .identity-picker-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00e5ff, #b388ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a0a1a;
+    flex-shrink: 0;
+  }
+  .identity-picker-name {
+    font-size: 16px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="titlebar" id="titlebar">
+    <span class="titlebar-label">QuickTodo</span>
+  </div>
+  <div class="collapsible" id="collapsible">
+    <!-- Identity picker (shown when no user selected) -->
+    <div class="identity-picker" id="identityPicker" style="display:none;">
+      <div class="identity-picker-content">
+        <div class="identity-picker-title">Who are you?</div>
+        <div class="identity-picker-buttons" id="identityButtons"></div>
+      </div>
+    </div>
+    <!-- Main todo UI (shown when user is selected) -->
+    <div id="mainUI" style="display:none; flex-direction:column; min-height:0;">
+      <div class="user-bar" id="userBar">
+        <span class="user-bar-name" id="userBarName"></span>
+        <button class="user-bar-switch" id="userBarSwitch">Switch</button>
+      </div>
+      <div class="tab-bar" id="tabBar"></div>
+      <div class="list-area" id="listArea"></div>
+      <div class="input-area" id="inputArea">
+        <input type="text" id="newItemInput" placeholder="Add a task…" autofocus>
+      </div>
+      <div class="status-bar" id="statusBar">
+        <span id="statusText"></span>
+        <span class="clear-done" id="clearDone" title="Remove completed items">clear done</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Supabase config ──
+const SUPABASE_URL = 'https://bbztmfiefxymkfmmplfj.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_-pkNGDQJIBajbVAPgcbe_Q_OcPtkJ1X';
+const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SB_HEADERS = {
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=representation'
+};
+
+const NUM_COLORS = 8;
+const STATUS_ORDER = { todo: 0, inflight: 1, done: 2 };
+const USERS = [
+  { id: 'brendan', label: 'Brendan' },
+  { id: 'erin', label: 'Erin' }
+];
+const IDENTITY_KEY = 'quicktodo_user';
+
+// ── State ──
+let currentUser = null;       // 'brendan' | 'erin' | null
+let allLists = [];            // Array of { id, name, color_index, sort_order, owner, items: [...] }
+let activeListId = null;      // UUID string
+let newListShared = false;
+let pendingRenameId = null;
+let pywebviewReady = false;
+const recentlyDone = new Set();
+
+// ── Identity (persisted to disk via pywebview, localStorage as fallback) ──
+// pywebview JS API calls return Promises, so all disk I/O must be async.
+
+let _diskState = {}; // cached disk state: { identity, activeList_brendan, activeList_erin, ... }
+let _diskLoaded = false;
+
+async function _loadDiskState() {
+  if (_diskLoaded) return _diskState;
+  try {
+    if (window.pywebview && window.pywebview.api) {
+      const raw = await window.pywebview.api.load_data();
+      if (raw) {
+        _diskState = JSON.parse(raw);
+      }
+    }
+  } catch(e) { console.log('_loadDiskState error:', e); }
+  _diskLoaded = true;
+  return _diskState;
+}
+
+async function _saveDiskState() {
+  try {
+    if (window.pywebview && window.pywebview.api) {
+      await window.pywebview.api.save_data(JSON.stringify(_diskState));
+    }
+  } catch(e) { console.log('_saveDiskState error:', e); }
+}
+
+async function getStoredIdentity() {
+  const state = await _loadDiskState();
+  if (state.identity === 'brendan' || state.identity === 'erin') return state.identity;
+  // Fallback: check localStorage (for non-pywebview contexts)
+  try {
+    const val = localStorage.getItem(IDENTITY_KEY);
+    if (val === 'brendan' || val === 'erin') return val;
+  } catch(e) {}
+  return null;
+}
+
+async function setStoredIdentity(id) {
+  await _loadDiskState();
+  _diskState.identity = id;
+  await _saveDiskState();
+  try { localStorage.setItem(IDENTITY_KEY, id); } catch(e) {}
+}
+
+async function clearStoredIdentity() {
+  await _loadDiskState();
+  delete _diskState.identity;
+  await _saveDiskState();
+  try { localStorage.removeItem(IDENTITY_KEY); } catch(e) {}
+}
+
+function getActiveListKey() {
+  return 'quicktodo_active_list_' + currentUser;
+}
+
+async function getStoredActiveListId() {
+  const state = await _loadDiskState();
+  const key = 'activeList_' + currentUser;
+  if (state[key]) return state[key];
+  try {
+    return localStorage.getItem(getActiveListKey());
+  } catch(e) {}
+  return null;
+}
+
+async function setStoredActiveListId(id) {
+  await _loadDiskState();
+  const key = 'activeList_' + currentUser;
+  if (id) {
+    _diskState[key] = id;
+  } else {
+    delete _diskState[key];
+  }
+  await _saveDiskState();
+  try {
+    if (id) localStorage.setItem(getActiveListKey(), id);
+    else localStorage.removeItem(getActiveListKey());
+  } catch(e) {}
+}
+
+// ── List visibility ──
+
+function isListVisibleTo(list, user) {
+  if (!list.owner) return true; // shared
+  return list.owner === user;
+}
+
+function isSharedList(list) {
+  return !list.owner;
+}
+
+function getVisibleLists() {
+  if (!currentUser) return [];
+  return allLists.filter(l => isListVisibleTo(l, currentUser));
+}
+
+function getSortedVisibleLists() {
+  const visible = getVisibleLists();
+  return visible.sort((a, b) => {
+    const aOwned = a.owner === currentUser ? 0 : 1;
+    const bOwned = b.owner === currentUser ? 0 : 1;
+    if (aOwned !== bOwned) return aOwned - bOwned;
+    return a.sort_order - b.sort_order;
+  });
+}
+
+function sortItems(items) {
+  return [...items].sort((a, b) => {
+    const aStatus = recentlyDone.has(a.id) ? 'todo' : a.status;
+    const bStatus = recentlyDone.has(b.id) ? 'todo' : b.status;
+    return (STATUS_ORDER[aStatus] ?? 0) - (STATUS_ORDER[bStatus] ?? 0) || a.sort_order - b.sort_order;
+  });
+}
+
+function getActiveList() {
+  if (!activeListId) return null;
+  return allLists.find(l => l.id === activeListId) || null;
+}
+
+// ── Supabase CRUD (individual operations, NOT destructive bulk) ──
+
+async function sbFetchAll() {
+  const [listsRes, itemsRes] = await Promise.all([
+    fetch(SUPABASE_URL + '/rest/v1/todo_lists?order=sort_order', { headers: SB_HEADERS }),
+    fetch(SUPABASE_URL + '/rest/v1/todo_items?order=sort_order', { headers: SB_HEADERS })
+  ]);
+  if (!listsRes.ok || !itemsRes.ok) throw new Error('Fetch failed');
+  const lists = await listsRes.json();
+  const items = await itemsRes.json();
+  const itemsByList = {};
+  items.forEach(item => {
+    if (!itemsByList[item.list_id]) itemsByList[item.list_id] = [];
+    itemsByList[item.list_id].push(item);
+  });
+  return lists.map(l => ({
+    id: l.id,
+    name: l.name,
+    color_index: l.color_index ?? 0,
+    sort_order: l.sort_order ?? 0,
+    owner: l.owner || null,
+    items: (itemsByList[l.id] || []).map(it => ({
+      id: it.id,
+      list_id: it.list_id,
+      text: it.text,
+      status: it.status || 'todo',
+      sort_order: it.sort_order ?? 0,
+      parent_id: it.parent_id || null,
+      created_at: it.created_at,
+    }))
+  }));
+}
+
+async function sbCreateList(data) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/todo_lists', {
+    method: 'POST',
+    headers: SB_HEADERS,
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error('Create list failed');
+  const arr = await res.json();
+  return arr[0];
+}
+
+async function sbUpdateList(id, updates) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/todo_lists?id=eq.' + id, {
+    method: 'PATCH',
+    headers: SB_HEADERS,
+    body: JSON.stringify(updates)
+  });
+  if (!res.ok) throw new Error('Update list failed');
+}
+
+async function sbDeleteList(id) {
+  // Delete items first, then the list
+  await fetch(SUPABASE_URL + '/rest/v1/todo_items?list_id=eq.' + id, {
+    method: 'DELETE',
+    headers: SB_HEADERS
+  });
+  await fetch(SUPABASE_URL + '/rest/v1/todo_lists?id=eq.' + id, {
+    method: 'DELETE',
+    headers: SB_HEADERS
+  });
+}
+
+async function sbCreateItem(data) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/todo_items', {
+    method: 'POST',
+    headers: SB_HEADERS,
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error('Create item failed');
+  const arr = await res.json();
+  return arr[0];
+}
+
+async function sbUpdateItem(id, updates) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/todo_items?id=eq.' + id, {
+    method: 'PATCH',
+    headers: SB_HEADERS,
+    body: JSON.stringify(updates)
+  });
+  if (!res.ok) throw new Error('Update item failed');
+}
+
+async function sbDeleteItem(id) {
+  await fetch(SUPABASE_URL + '/rest/v1/todo_items?id=eq.' + id, {
+    method: 'DELETE',
+    headers: SB_HEADERS
+  });
+}
+
+// ── Optimistic mutation helpers ──
+// Pattern: apply change locally -> render -> fire request -> on error rollback -> on success refresh
+
+function snapshotLists() {
+  return JSON.parse(JSON.stringify(allLists));
+}
+
+function rollback(snapshot) {
+  allLists = snapshot;
+  recentlyDone.clear();
+  render();
+}
+
+async function refreshFromSupabase() {
+  try {
+    const fresh = await sbFetchAll();
+    allLists = fresh;
+    autoSelectList();
+    render();
+  } catch(e) {
+    console.log('Refresh failed:', e);
+  }
+}
+
+function autoSelectList() {
+  const sorted = getSortedVisibleLists();
+  if (sorted.length === 0) {
+    activeListId = null;
+    return;
+  }
+  if (activeListId && sorted.some(l => l.id === activeListId)) return;
+  activeListId = sorted[0].id;
+  setStoredActiveListId(activeListId);
+}
+
+// ── Mutations (optimistic) ──
+
+async function addList() {
+  const snapshot = snapshotLists();
+  const tempId = 'temp-' + Date.now();
+  const colorIndex = allLists.length % NUM_COLORS;
+  const owner = newListShared ? null : currentUser;
+  const optimistic = {
+    id: tempId,
+    name: 'New List',
+    color_index: colorIndex,
+    sort_order: allLists.length,
+    owner: owner,
+    items: []
+  };
+  allLists.push(optimistic);
+  activeListId = tempId;
+  setStoredActiveListId(tempId);
+  pendingRenameId = tempId;
+  newListShared = false;
+  render();
+
+  try {
+    const created = await sbCreateList({
+      name: 'New List',
+      color_index: colorIndex,
+      sort_order: allLists.length - 1,
+      owner: owner
+    });
+    // Replace temp with real
+    const idx = allLists.findIndex(l => l.id === tempId);
+    if (idx !== -1) {
+      allLists[idx].id = created.id;
+    }
+    if (activeListId === tempId) {
+      activeListId = created.id;
+      setStoredActiveListId(created.id);
+    }
+    if (pendingRenameId === tempId) pendingRenameId = created.id;
+    render();
+  } catch(e) {
+    console.log('addList error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function updateList(id, updates) {
+  if (id.startsWith('temp-')) return; // can't update a temp list
+  const snapshot = snapshotLists();
+  const list = allLists.find(l => l.id === id);
+  if (list) Object.assign(list, updates);
+  render();
+
+  try {
+    await sbUpdateList(id, updates);
+  } catch(e) {
+    console.log('updateList error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function deleteList(id) {
+  if (!confirm('Delete "' + (allLists.find(l => l.id === id)?.name || '') + '" and all its items?')) return;
+  const snapshot = snapshotLists();
+  allLists = allLists.filter(l => l.id !== id);
+  if (activeListId === id) {
+    const sorted = getSortedVisibleLists();
+    activeListId = sorted.length > 0 ? sorted[0].id : null;
+    setStoredActiveListId(activeListId);
+  }
+  render();
+
+  if (id.startsWith('temp-')) return;
+  try {
+    await sbDeleteList(id);
+  } catch(e) {
+    console.log('deleteList error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function addItem(text, parentId) {
+  const list = getActiveList();
+  if (!list) return;
+  const snapshot = snapshotLists();
+  const tempId = 'temp-' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+  const optimistic = {
+    id: tempId,
+    list_id: list.id,
+    text: text,
+    status: 'todo',
+    sort_order: list.items.length,
+    parent_id: parentId || null,
+    created_at: new Date().toISOString()
+  };
+  list.items.push(optimistic);
+  render();
+
+  if (list.id.startsWith('temp-')) return;
+  try {
+    const payload = { list_id: list.id, text: text, sort_order: list.items.length - 1 };
+    if (parentId) payload.parent_id = parentId;
+    const created = await sbCreateItem(payload);
+    // Replace temp
+    const currentList = allLists.find(l => l.id === list.id);
+    if (currentList) {
+      const itemIdx = currentList.items.findIndex(i => i.id === tempId);
+      if (itemIdx !== -1) {
+        currentList.items[itemIdx].id = created.id;
+        if (created.parent_id) currentList.items[itemIdx].parent_id = created.parent_id;
+      }
+    }
+  } catch(e) {
+    console.log('addItem error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function moveItemToList(itemId, targetListId) {
+  const snapshot = snapshotLists();
+  let movedItem = null;
+  let sourceList = null;
+  for (const list of allLists) {
+    const item = list.items.find(i => i.id === itemId);
+    if (item) { movedItem = item; sourceList = list; break; }
+  }
+  if (!movedItem || !sourceList) return;
+  const subtasks = sourceList.items.filter(i => i.parent_id === itemId);
+
+  // Optimistic: remove from source, add to target
+  sourceList.items = sourceList.items.filter(i => i.id !== itemId && i.parent_id !== itemId);
+  const targetList = allLists.find(l => l.id === targetListId);
+  if (targetList) {
+    movedItem.list_id = targetListId;
+    targetList.items.push(movedItem);
+    for (const s of subtasks) { s.list_id = targetListId; targetList.items.push(s); }
+  }
+  activeListId = targetListId;
+  setStoredActiveListId(targetListId);
+  render();
+
+  try {
+    await sbUpdateItem(itemId, { list_id: targetListId });
+    for (const s of subtasks) await sbUpdateItem(s.id, { list_id: targetListId });
+  } catch(e) {
+    console.log('moveItemToList error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function updateItem(id, updates) {
+  if (id.startsWith('temp-')) return;
+  const snapshot = snapshotLists();
+  for (const list of allLists) {
+    const item = list.items.find(i => i.id === id);
+    if (item) {
+      Object.assign(item, updates);
+      break;
+    }
+  }
+
+  if (updates.status === 'done') {
+    recentlyDone.add(id);
+    render();
+    setTimeout(() => { recentlyDone.delete(id); render(); }, 500);
+  } else {
+    render();
+  }
+
+  try {
+    await sbUpdateItem(id, updates);
+  } catch(e) {
+    console.log('updateItem error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function deleteItem(id) {
+  if (id.startsWith('temp-')) {
+    for (const list of allLists) {
+      // Also remove subtasks
+      list.items = list.items.filter(i => i.id !== id && i.parent_id !== id);
+    }
+    render();
+    return;
+  }
+  const snapshot = snapshotLists();
+  for (const list of allLists) {
+    // Optimistically remove subtasks too (DB cascade will handle server-side)
+    list.items = list.items.filter(i => i.id !== id && i.parent_id !== id);
+  }
+  render();
+
+  try {
+    await sbDeleteItem(id);
+  } catch(e) {
+    console.log('deleteItem error:', e);
+    rollback(snapshot);
+  }
+}
+
+async function clearDoneItems() {
+  const list = getActiveList();
+  if (!list) return;
+  // Only delete top-level done items; subtasks are handled by DB cascade
+  const doneItems = list.items.filter(i => i.status === 'done' && !i.parent_id);
+  for (const item of doneItems) {
+    deleteItem(item.id);
+  }
+}
+
+// ── Realtime subscriptions + fallback polling ──
+let _pollTimer = null;
+let _realtimeChannel = null;
+let _realtimeHealthy = false;
+
+function startSync() {
+  stopSync();
+  _realtimeHealthy = false;
+
+  _realtimeChannel = sbClient
+    .channel('quicktodo-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'todo_lists' }, () => {
+      refreshFromSupabase();
+    })
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'todo_items' }, () => {
+      refreshFromSupabase();
+    })
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        _realtimeHealthy = true;
+        stopFallbackPolling();
+        console.log('Realtime connected');
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') {
+        _realtimeHealthy = false;
+        startFallbackPolling();
+        console.log('Realtime disconnected, falling back to polling');
+      }
+    });
+}
+
+function stopSync() {
+  if (_realtimeChannel) {
+    sbClient.removeChannel(_realtimeChannel);
+    _realtimeChannel = null;
+  }
+  _realtimeHealthy = false;
+  stopFallbackPolling();
+}
+
+function startFallbackPolling() {
+  if (_pollTimer) return; // already polling
+  _pollTimer = setInterval(async () => {
+    try {
+      const fresh = await sbFetchAll();
+      allLists = fresh;
+      autoSelectList();
+      render();
+    } catch(e) {}
+  }, 10000);
+  console.log('Fallback polling started (10s)');
+}
+
+function stopFallbackPolling() {
+  if (_pollTimer) {
+    clearInterval(_pollTimer);
+    _pollTimer = null;
+    console.log('Fallback polling stopped');
+  }
+}
+
+// ── Rendering ──
+
+function showIdentityPicker() {
+  document.getElementById('identityPicker').style.display = 'flex';
+  document.getElementById('mainUI').style.display = 'none';
+  document.getElementById('mainUI').style.flex = '';
+
+  const btns = document.getElementById('identityButtons');
+  btns.innerHTML = '';
+  USERS.forEach(user => {
+    const btn = document.createElement('button');
+    btn.className = 'identity-picker-btn';
+    btn.innerHTML = `
+      <span class="identity-picker-avatar">${user.label.charAt(0)}</span>
+      <span class="identity-picker-name">${user.label}</span>
+    `;
+    btn.addEventListener('click', () => selectIdentity(user.id));
+    btns.appendChild(btn);
+  });
+}
+
+function showMainUI() {
+  document.getElementById('identityPicker').style.display = 'none';
+  const mainUI = document.getElementById('mainUI');
+  mainUI.style.display = 'flex';
+  mainUI.style.flex = '1';
+  document.getElementById('userBarName').textContent =
+    currentUser.charAt(0).toUpperCase() + currentUser.slice(1) + "'s Todos";
+}
+
+async function selectIdentity(id) {
+  currentUser = id;
+  await setStoredIdentity(id);
+  activeListId = await getStoredActiveListId();
+  showMainUI();
+
+  // Load from Supabase
+  try {
+    const fresh = await sbFetchAll();
+    allLists = fresh;
+  } catch(e) {
+    console.log('Initial load failed:', e);
+  }
+  autoSelectList();
+  render();
+  startSync();
+  document.getElementById('newItemInput').focus();
+}
+
+async function switchUser() {
+  currentUser = null;
+  await clearStoredIdentity();
+  activeListId = null;
+  allLists = [];
+  stopSync();
+  showIdentityPicker();
+}
+
+function render() {
+  const app = document.getElementById('app');
+  const activeList = getActiveList();
+
+  app.className = 'app';
+  if (activeList) {
+    app.classList.add('color-' + (activeList.color_index % NUM_COLORS));
+  }
+  if (app.dataset.collapsed === 'true') {
+    app.classList.add('collapsed');
+  }
+
+  renderTabs();
+  renderList();
+  renderStatus();
+  renderInputVisibility();
+}
+
+function renderInputVisibility() {
+  const activeList = getActiveList();
+  document.getElementById('inputArea').style.display = activeList ? 'block' : 'none';
+  document.getElementById('statusBar').style.display = activeList ? 'flex' : 'none';
+}
+
+function renderTabs() {
+  const bar = document.getElementById('tabBar');
+  bar.innerHTML = '';
+  const sorted = getSortedVisibleLists();
+
+  sorted.forEach(list => {
+    const tab = document.createElement('div');
+    const isActive = list.id === activeListId;
+    const shared = isSharedList(list);
+    tab.className = 'tab color-' + (list.color_index % NUM_COLORS)
+      + (isActive ? ' active' : '')
+      + (shared ? ' shared' : '');
+
+    const name = document.createElement('span');
+    name.className = 'tab-name';
+    name.textContent = list.name;
+
+    const handleTabClick = (e) => {
+      e.stopPropagation();
+      if (activeListId === list.id) return; // already active — skip re-render so dblclick fires on same elements
+      activeListId = list.id;
+      setStoredActiveListId(list.id);
+      render();
+    };
+    const handleTabDblClick = (e) => {
+      e.stopPropagation();
+      startRenameTab(tab, name, list);
+    };
+    name.addEventListener('click', handleTabClick);
+    name.addEventListener('dblclick', handleTabDblClick);
+    tab.addEventListener('click', handleTabClick);
+    tab.addEventListener('dblclick', handleTabDblClick);
+    tab.appendChild(name);
+
+    if (pendingRenameId === list.id) {
+      setTimeout(() => startRenameTab(tab, name, list), 0);
+      pendingRenameId = null;
+    }
+
+    if (shared) {
+      const badge = document.createElement('span');
+      badge.className = 'tab-shared-badge';
+      badge.textContent = 'shared';
+      tab.appendChild(badge);
+    }
+
+    const count = document.createElement('span');
+    count.className = 'tab-count';
+    count.textContent = list.items.filter(i => !i.parent_id).length;
+    tab.appendChild(count);
+
+    const close = document.createElement('span');
+    close.className = 'tab-close';
+    close.textContent = '\u00d7';
+    close.title = 'Delete this list';
+    close.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteList(list.id);
+    });
+    tab.appendChild(close);
+
+    // Cross-list drag: hovering a dragged item over a tab switches list
+    tab.addEventListener('dragover', (e) => {
+      if (!dragSrcItemId || list.id === activeListId) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (!tab.classList.contains('drag-target')) {
+        tab.classList.add('drag-target');
+        tabDragTimers[list.id] = setTimeout(() => {
+          activeListId = list.id;
+          setStoredActiveListId(list.id);
+          render();
+        }, 600);
+      }
+    });
+    tab.addEventListener('dragleave', () => {
+      tab.classList.remove('drag-target');
+      if (tabDragTimers[list.id]) { clearTimeout(tabDragTimers[list.id]); delete tabDragTimers[list.id]; }
+    });
+    tab.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      tab.classList.remove('drag-target');
+      if (tabDragTimers[list.id]) { clearTimeout(tabDragTimers[list.id]); delete tabDragTimers[list.id]; }
+      if (dragSrcItemId && list.id !== activeListId) {
+        const srcId = dragSrcItemId;
+        dragSrcItemId = null;
+        dragSrcIndex = null;
+        moveItemToList(srcId, list.id);
+      }
+    });
+
+    bar.appendChild(tab);
+  });
+
+  // Add group: + button and shared toggle
+  const addGroup = document.createElement('div');
+  addGroup.className = 'tab-add-group';
+
+  const addBtn = document.createElement('div');
+  addBtn.className = 'tab-add';
+  addBtn.textContent = '+';
+  addBtn.title = newListShared ? 'Add shared list' : 'Add personal list';
+  addBtn.addEventListener('click', () => addList());
+  addGroup.appendChild(addBtn);
+
+  const sharedToggle = document.createElement('button');
+  sharedToggle.className = 'shared-toggle' + (newListShared ? ' active' : '');
+  sharedToggle.textContent = newListShared ? 'Shared' : 'Personal';
+  sharedToggle.title = newListShared ? 'Will create shared list' : 'Will create personal list';
+  sharedToggle.addEventListener('click', () => {
+    newListShared = !newListShared;
+    render();
+  });
+  addGroup.appendChild(sharedToggle);
+
+  bar.appendChild(addGroup);
+}
+
+function startRenameTab(tabEl, nameEl, list) {
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.className = 'tab-rename-input';
+  inp.value = list.name;
+
+  nameEl.replaceWith(inp);
+  inp.focus();
+  inp.select();
+
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    const val = inp.value.trim();
+    if (val && val !== list.name) {
+      updateList(list.id, { name: val });
+    } else {
+      render();
+    }
+    document.getElementById('newItemInput').focus();
+  };
+  inp.addEventListener('blur', finish);
+  inp.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); finish(); }
+    if (e.key === 'Escape') { finished = true; render(); }
+  });
+}
+
+let dragSrcIndex = null;
+let dragSrcItemId = null; // for cross-list drag
+let tabDragTimers = {};   // timers for tab hover-to-switch
+
+function makeItemRow(item, list, displayIdx, topLevelItems) {
+  const row = document.createElement('div');
+  row.className = 'todo-item'
+    + (item.status === 'done' ? ' done' : '')
+    + (item.status === 'inflight' ? ' inflight' : '')
+    + (recentlyDone.has(item.id) ? ' completing' : '');
+  row.draggable = !item.parent_id; // only top-level items are draggable
+  row.dataset.id = item.id;
+
+  if (!item.parent_id) {
+    row.addEventListener('dragstart', (e) => {
+      dragSrcIndex = displayIdx;
+      dragSrcItemId = item.id;
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', item.id);
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+      dragSrcIndex = null;
+      dragSrcItemId = null;
+    });
+    row.addEventListener('dragover', (e) => {
+      if (dragSrcItemId === null) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (dragSrcIndex !== null && dragSrcIndex !== displayIdx) {
+        const srcItem = list.items.find(i => i.id === dragSrcItemId);
+        if (srcItem) {
+          list.items = list.items.filter(i => i.id !== srcItem.id);
+          const targetIdx = list.items.findIndex(i => i.id === item.id);
+          list.items.splice(targetIdx, 0, srcItem);
+          list.items.forEach((it, idx) => {
+            it.sort_order = idx;
+            if (!it.id.startsWith('temp-')) sbUpdateItem(it.id, { sort_order: idx }).catch(() => {});
+          });
+          render();
+        }
+      }
+    });
+  }
+
+  const check = document.createElement('div');
+  check.className = 'todo-check';
+  check.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const nextStatus = item.status === 'done' ? 'todo' : 'done';
+    updateItem(item.id, { status: nextStatus });
+    if (!item.parent_id && nextStatus === 'done') {
+      // Cascade: mark all subtasks done
+      const subs = list.items.filter(i => i.parent_id === item.id);
+      for (const s of subs) updateItem(s.id, { status: 'done' });
+    } else if (item.parent_id && nextStatus === 'done') {
+      // Auto-complete parent if all siblings done
+      const siblings = list.items.filter(i => i.parent_id === item.parent_id && i.id !== item.id);
+      if (siblings.every(s => s.status === 'done')) {
+        updateItem(item.parent_id, { status: 'done' });
+      }
+    }
+  });
+  check.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const nextStatus = item.status === 'inflight' ? 'todo' : 'inflight';
+    updateItem(item.id, { status: nextStatus });
+  });
+
+  const textEl = document.createElement('div');
+  textEl.className = 'todo-text' + (item.parent_id ? ' todo-text--sub' : '');
+  textEl.textContent = item.text;
+  textEl.addEventListener('dblclick', (e) => {
+    e.stopPropagation();
+    row.draggable = false;
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'todo-edit-input';
+    inp.value = item.text;
+    textEl.replaceWith(inp);
+    inp.focus();
+    inp.select();
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      const val = inp.value.trim();
+      if (val && val !== item.text) updateItem(item.id, { text: val });
+      else if (!val) deleteItem(item.id);
+      else render();
+    };
+    inp.addEventListener('blur', finish);
+    inp.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') { ev.preventDefault(); finish(); }
+      if (ev.key === 'Escape') { finished = true; render(); }
+    });
+  });
+
+  const del = document.createElement('span');
+  del.className = 'todo-delete';
+  del.textContent = '\u00d7';
+  del.addEventListener('click', (e) => {
+    e.stopPropagation();
+    deleteItem(item.id);
+  });
+
+  row.appendChild(check);
+  row.appendChild(textEl);
+  return { row, del };
+}
+
+function renderList() {
+  const area = document.getElementById('listArea');
+  const list = getActiveList();
+  area.innerHTML = '';
+
+  if (!list) {
+    const sorted = getSortedVisibleLists();
+    area.innerHTML = `
+      <div class="empty-state">
+        <div>${sorted.length === 0 ? 'No lists yet' : 'Select a list'}</div>
+        <div class="hint">${sorted.length === 0 ? 'Hit + to create one' : 'Click a tab above'}</div>
+      </div>`;
+    return;
+  }
+
+  // Separate top-level items from subtasks
+  const topLevelItems = sortItems(list.items.filter(i => !i.parent_id));
+
+  if (topLevelItems.length === 0) {
+    area.innerHTML = `
+      <div class="empty-state">
+        <div>No tasks yet</div>
+        <div class="hint">Type below and hit Enter</div>
+      </div>`;
+    return;
+  }
+
+  topLevelItems.forEach((item, displayIdx) => {
+    const { row, del } = makeItemRow(item, list, displayIdx, topLevelItems);
+    const subs = sortItems(list.items.filter(i => i.parent_id === item.id));
+    const doneSubs = subs.filter(s => s.status === 'done').length;
+
+    // Subtask badge
+    if (subs.length > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'subtask-badge';
+      badge.textContent = `${doneSubs}/${subs.length}`;
+      badge.title = `${doneSubs} of ${subs.length} subtasks done`;
+      row.appendChild(badge);
+    }
+
+    // Add-subtask button
+    const addSubBtn = document.createElement('span');
+    addSubBtn.className = 'add-sub-btn';
+    addSubBtn.textContent = '+';
+    addSubBtn.title = 'Add subtask';
+    addSubBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Append an inline subtask input row after this item's subtasks
+      const inputRow = document.createElement('div');
+      inputRow.className = 'todo-item subtask-row subtask-add-row';
+      const indent = document.createElement('span');
+      indent.className = 'subtask-indent';
+      const dot = document.createElement('span');
+      dot.className = 'subtask-new-dot';
+      dot.textContent = '\u25e6';
+      const inp = document.createElement('input');
+      inp.type = 'text';
+      inp.className = 'todo-edit-input subtask-edit-input';
+      inp.placeholder = 'New subtask\u2026';
+      inputRow.appendChild(indent);
+      inputRow.appendChild(dot);
+      inputRow.appendChild(inp);
+      // Insert after the last subtask row or after the item row
+      let insertAfter = row;
+      const nextEl = insertAfter.nextSibling;
+      // Skip past existing subtask rows
+      let cursor = row.nextSibling;
+      while (cursor && cursor.classList && cursor.classList.contains('subtask-row')) {
+        insertAfter = cursor;
+        cursor = cursor.nextSibling;
+      }
+      if (insertAfter.nextSibling) {
+        area.insertBefore(inputRow, insertAfter.nextSibling);
+      } else {
+        area.appendChild(inputRow);
+      }
+      inp.focus();
+      let done = false;
+      const commit = () => {
+        if (done) return;
+        done = true;
+        const val = inp.value.trim();
+        if (val) addItem(val, item.id);
+        else render();
+      };
+      inp.addEventListener('blur', commit);
+      inp.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') { ev.preventDefault(); commit(); }
+        if (ev.key === 'Escape') { done = true; render(); }
+      });
+    });
+
+    row.appendChild(addSubBtn);
+    row.appendChild(del);
+    area.appendChild(row);
+
+    // Render subtask rows
+    subs.forEach((sub) => {
+      const { row: subRow, del: subDel } = makeItemRow(sub, list, -1, topLevelItems);
+      subRow.classList.add('subtask-row');
+
+      // Add indent element at the start
+      const indent = document.createElement('span');
+      indent.className = 'subtask-indent';
+      subRow.insertBefore(indent, subRow.firstChild);
+
+      subRow.appendChild(subDel);
+      area.appendChild(subRow);
+    });
+  });
+}
+
+function renderStatus() {
+  const list = getActiveList();
+  if (!list) {
+    document.getElementById('statusText').textContent = '';
+    document.getElementById('clearDone').style.display = 'none';
+    return;
+  }
+  const items = list.items;
+  const done = items.filter(i => i.status === 'done').length;
+  const inflight = items.filter(i => i.status === 'inflight').length;
+  const todo = items.length - done - inflight;
+  document.getElementById('statusText').textContent =
+    items.length === 0 ? '' : `${todo} to do \u00b7 ${inflight} in flight \u00b7 ${done} done`;
+  // Show "clear done" only if there are done TOP-LEVEL items
+  const doneTopLevel = items.filter(i => i.status === 'done' && !i.parent_id).length;
+  document.getElementById('clearDone').style.display = doneTopLevel > 0 ? 'inline' : 'none';
+}
+
+// ── Input handling ──
+
+const input = document.getElementById('newItemInput');
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && input.value.trim()) {
+    addItems(input.value);
+    input.value = '';
+  }
+});
+
+input.addEventListener('paste', (e) => {
+  const pasted = (e.clipboardData || window.clipboardData).getData('text');
+  if (pasted && pasted.includes('\n')) {
+    e.preventDefault();
+    const prefix = input.value.substring(0, input.selectionStart);
+    const suffix = input.value.substring(input.selectionEnd);
+    addItems(prefix + pasted + suffix);
+    input.value = '';
+  }
+});
+
+function addItems(text) {
+  const list = getActiveList();
+  if (!list) return;
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+  lines.forEach(line => {
+    line = line.replace(/^(?:[-*\u2022\u2013\u2014]\s+|\d+[.)]\s+|\[.\]\s+)/, '');
+    if (line) addItem(line);
+  });
+}
+
+document.getElementById('clearDone').addEventListener('click', () => clearDoneItems());
+
+// ── User bar ──
+
+document.getElementById('userBarSwitch').addEventListener('click', switchUser);
+
+// ── Titlebar collapse ──
+
+document.getElementById('titlebar').addEventListener('dblclick', () => {
+  const app = document.getElementById('app');
+  const isCollapsed = app.dataset.collapsed === 'true';
+  app.dataset.collapsed = isCollapsed ? 'false' : 'true';
+  app.classList.toggle('collapsed');
+  if (window.pywebview && window.pywebview.api) {
+    window.pywebview.api.set_collapsed(!isCollapsed);
+  }
+});
+
+// ── Keyboard shortcuts ──
+
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'n') {
+    e.preventDefault();
+    input.focus();
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key === 't') {
+    e.preventDefault();
+    addList();
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key >= '1' && e.key <= '9') {
+    const sorted = getSortedVisibleLists();
+    const idx = parseInt(e.key) - 1;
+    if (idx < sorted.length) {
+      e.preventDefault();
+      activeListId = sorted[idx].id;
+      setStoredActiveListId(activeListId);
+      render();
+    }
+  }
+});
+
+// ── Context menu ──
+
+let ctxMenu = null;
+function hideCtxMenu() {
+  if (ctxMenu) { ctxMenu.remove(); ctxMenu = null; }
+}
+document.addEventListener('click', hideCtxMenu);
+document.addEventListener('contextmenu', async (e) => {
+  // Only show app context menu if not on a todo-check (those have their own handler)
+  if (e.target.closest('.todo-check')) return;
+  e.preventDefault();
+  hideCtxMenu();
+
+  const menu = document.createElement('div');
+  menu.className = 'ctx-menu';
+
+  let isOnTop = false;
+  if (window.pywebview && window.pywebview.api) {
+    try { isOnTop = await window.pywebview.api.get_on_top(); } catch(e) {}
+  }
+  const floatItem = document.createElement('div');
+  floatItem.className = 'ctx-menu-item';
+  floatItem.innerHTML = `<span class="ctx-check">${isOnTop ? '\u2713' : ''}</span> Always on top`;
+  floatItem.addEventListener('click', async () => {
+    if (window.pywebview && window.pywebview.api) {
+      try { await window.pywebview.api.toggle_on_top(); } catch(e) {}
+    }
+    hideCtxMenu();
+  });
+  menu.appendChild(floatItem);
+
+  menu.style.left = Math.min(e.clientX, window.innerWidth - 170) + 'px';
+  menu.style.top = Math.min(e.clientY, window.innerHeight - 40) + 'px';
+
+  document.body.appendChild(menu);
+  ctxMenu = menu;
+});
+
+// ── PyWebView integration ──
+
+window.addEventListener('pywebviewready', () => {
+  pywebviewReady = true;
+});
+
+// ── Init ──
+
+async function initApp() {
+  _diskLoaded = false; // reset cache so it re-reads from pywebview if available
+  const storedUser = await getStoredIdentity();
+  if (storedUser) {
+    currentUser = storedUser;
+    activeListId = await getStoredActiveListId();
+    showMainUI();
+    sbFetchAll().then(fresh => {
+      allLists = fresh;
+      autoSelectList();
+      render();
+      startSync();
+      input.focus();
+    }).catch(e => {
+      console.log('Initial load failed:', e);
+      render();
+      startSync();
+    });
+  } else {
+    showIdentityPicker();
+  }
+}
+
+// If pywebview is already ready (unlikely but safe), init now.
+// Otherwise wait briefly for pywebview, then init regardless.
+if (window.pywebview && window.pywebview.api) {
+  initApp();
+} else {
+  let inited = false;
+  window.addEventListener('pywebviewready', () => {
+    if (!inited) { inited = true; initApp(); }
+  });
+  // Fallback: if pywebview doesn't show up in 300ms, we're in a plain browser
+  setTimeout(() => {
+    if (!inited) { inited = true; initApp(); }
+  }, 300);
+}
+</script>
+</body>
+</html>
